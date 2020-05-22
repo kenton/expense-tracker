@@ -1,16 +1,14 @@
+import { Transactions } from '../../api/transactions';
+
 export default (state, action) => {
   switch(action.type) {
     case 'DELETE_TRANSACTION':
-      return {
-        ...state,
-        transactions: state.transactions.filter(transaction => transaction.id !== action.payload)
-      }
+      Transactions.remove({_id: action.payload._id});
 
     case 'ADD_TRANSACTION':
-      return {
-        ...state,
-        transactions: [action.payload, ...state.transactions]
-      }
+      newTransactionId = Transactions.insert(
+        action.payload
+      );
 
     default:
       return state;

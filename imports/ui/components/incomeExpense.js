@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { GlobalContext } from  '../contexts/globalState';
+import { TransactionsContext } from  '../contexts/globalState';
 
 export const IncomeExpense = () => {
-  const {transactions} = useContext(GlobalContext);
+  const {transactions} = useContext(TransactionsContext);
   const incomeTotal = transactions
                         .filter(transaction => transaction.amount >= 0)
                         .reduce((sum, el) => sum += el.amount, 0)

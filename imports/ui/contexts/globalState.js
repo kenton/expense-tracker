@@ -1,45 +1,48 @@
 import React, { createContext, useReducer } from 'react';
 import AppReducer from './appReducer';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Transactions } from '../../api/transactions';
 
-// initial state
+export const TransactionsContext = createContext('transactions');
 
-const initialState = {
-  transactions: []
-}
+export const withTransactions = withTracker((props) => {
+  const transactions = Transactions.find({}).fetch();
 
-// create context
-export const GlobalContext = createContext(initialState);
+  return { transactions }
+});
 
 /**
  * provider component
  * this component is going to wrap our other components, so we're passing in 'children' as a prop
  * here to use within this function.
  *  */
-export const GlobalProvider = ({children}) => {
-  const [state, dispatch] = useReducer(AppReducer, initialState);
+const Provider = (props) => {
+  const [state, dispatch] = useReducer(AppReducer, []);
 
-  // actions
-  function deleteTransaction(id) {
-    dispatch({
-      type: 'DELETE_TRANSACTION',
-      payload: id
-    });
-  }
+    // actions
+    function deleteTransaction(transaction) {
+      dispatch({
+        type: 'DELETE_TRANSACTION',
+        payload: transaction
+      });
+    }
 
-  function addTransaction(transaction) {
-    dispatch({
-      type: 'ADD_TRANSACTION',
-      payload: transaction
-    })
-  }
-
+    function addTransaction(transaction) {
+      dispatch({
+        type: 'ADD_TRANSACTION',
+        payload: transaction
+      })
+    }
   return (
-    <GlobalContext.Provider value={{
-      transactions: state.transactions,
+    <TransactionsContext.Provider value={
+      {
+      transactions: props.transactions,
       deleteTransaction,
       addTransaction
     }}>
-      {children}
-    </GlobalContext.Provider>
+      {props.children}
+    </TransactionsContext.Provider>
   );
-}
+};
+
+export const TransactionsProvider = withTransactions(Provider);
