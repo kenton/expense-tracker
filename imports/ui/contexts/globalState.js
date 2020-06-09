@@ -1,5 +1,4 @@
-import React, { createContext, useReducer } from 'react';
-import AppReducer from './appReducer';
+import React, { createContext } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Transactions } from '../../api/transactions';
 
@@ -17,22 +16,17 @@ export const withTransactions = withTracker((props) => {
  * here to use within this function.
  *  */
 const Provider = (props) => {
-  const [state, dispatch] = useReducer(AppReducer, []);
 
-    // actions
-    function deleteTransaction(transaction) {
-      dispatch({
-        type: 'DELETE_TRANSACTION',
-        payload: transaction
-      });
+    const deleteTransaction = (transaction) => {
+      Transactions.remove(transaction._id);
     }
 
-    function addTransaction(transaction) {
-      dispatch({
-        type: 'ADD_TRANSACTION',
-        payload: transaction
-      })
+    const addTransaction = (transaction) => {
+      Transactions.insert(
+        transaction
+      );
     }
+
   return (
     <TransactionsContext.Provider value={
       {

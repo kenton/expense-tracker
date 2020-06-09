@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { TransactionsContext } from  '../contexts/globalState';
-import { Transactions } from '../../api/transactions';
 
 
 export const Transaction = ({transaction}) => {
@@ -11,7 +10,7 @@ export const Transaction = ({transaction}) => {
 
   const onClick = e => {
     e.preventDefault();
-    Transactions.remove(transaction._id);
+    deleteTransaction(transaction);
   }
 
   return (
